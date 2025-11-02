@@ -384,7 +384,11 @@ const endings = [
     }
 ];
 
-// Game functions
+/**
+ * Initialize or reset the game state to starting values
+ * Resets all parameters to 50 (neutral state)
+ * Clears event history and choices made
+ */
 function initGame() {
     gameState = {
         turn: 1,
@@ -429,6 +433,12 @@ function updateStat(statName, value) {
     document.getElementById(`${statName}-bar`).style.width = clampedValue + '%';
 }
 
+/**
+ * Get a random event that hasn't been shown yet
+ * Prevents showing the same event twice in one playthrough
+ * Falls back to any random event if all events have been used
+ * @returns {Object} A random event object
+ */
 function getRandomEvent() {
     const availableEvents = events.filter(event => 
         !gameState.eventHistory.includes(event.id)
@@ -465,6 +475,12 @@ function nextEvent() {
     });
 }
 
+/**
+ * Apply the effects of a player's choice to the game state
+ * Clamps all values between 0 and 100
+ * Records the choice and advances to the next turn
+ * @param {Object} choice - The choice object containing effects to apply
+ */
 function makeChoice(choice) {
     // Apply effects
     Object.keys(choice.effects).forEach(key => {
@@ -483,10 +499,16 @@ function makeChoice(choice) {
     }, 300);
 }
 
+/**
+ * Display the appropriate ending based on final game state
+ * Evaluates endings in order and uses the first matching condition
+ * Falls back to default ending (ED20) if no conditions match
+ */
 function showEnding() {
     showScreen('ending-screen');
     
     // Find the appropriate ending
+    // Endings are evaluated in priority order - first match wins
     let selectedEnding = endings[endings.length - 1]; // default ending
     
     for (let ending of endings) {
@@ -499,7 +521,8 @@ function showEnding() {
     document.getElementById('ending-title').textContent = selectedEnding.title;
     document.getElementById('ending-description').textContent = selectedEnding.description;
     
-    // Create ending stats safely using DOM methods
+    // Create ending stats safely using DOM methods to prevent XSS vulnerabilities
+    // (avoiding innerHTML with dynamic content)
     const endingStatsDiv = document.getElementById('ending-stats');
     endingStatsDiv.innerHTML = ''; // Clear previous content
     
