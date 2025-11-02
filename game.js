@@ -556,10 +556,15 @@ const events = [
 ];
 
 // Endings data structure
+// Thresholds have been adjusted for better game balance:
+// - Reduced extremes (e.g., 20->25, 80->75) to make endings more achievable
+// - Added "mixed" ending types to reflect real-world complexity
+// - Endings are evaluated in order - first match wins, so order matters
 const endings = [
     {
         id: 'fascism_rise',
         title: 'ED1: ファシズムの台頭',
+        // Threshold increased slightly (20->25, 30->35) to avoid too-easy bad endings
         condition: (state) => state.democracy < 25 && state.voterTurnout < 35,
         description: '若者が政治に無関心のまま時が流れ、民主主義が崩壊しました。強権的な政府が誕生し、自由が失われていきます。もし若者が選挙に行っていたら、この未来は避けられたかもしれません。',
         type: 'bad'
@@ -644,6 +649,8 @@ const endings = [
     {
         id: 'ideal_society',
         title: 'ED13: 理想の社会',
+        // Thresholds lowered (80/75/75/80/80 -> 75/70/70/75/75) to make the best ending 
+        // achievable but still challenging, reflecting that perfection requires consistent good choices
         condition: (state) => state.democracy >= 75 && state.economy >= 70 && state.welfare >= 70 && state.voterTurnout >= 75 && state.youthInterest >= 75,
         description: '若者が政治に積極的に参加し、投票率が大幅に向上した結果、理想的な社会が実現しました。民主主義、経済、福祉のすべてが高水準で、誰もが希望を持てる社会です。あなたの選択が最高の未来を作りました！',
         type: 'good'
@@ -913,15 +920,17 @@ function showEnding() {
     endingStatsDiv.appendChild(createStatParagraph(`社会福祉: ${Math.round(gameState.welfare)}`));
     endingStatsDiv.appendChild(createStatParagraph(`若者の関心: ${Math.round(gameState.youthInterest)}`));
     
+    // Map ending types to messages
+    const endingMessages = {
+        'good': '素晴らしい結果です！あなたの政治参加が良い未来を作りました。',
+        'bad': '残念な結果です。政治への無関心が悪い未来を招きました。',
+        'mixed': '複雑な結果です。良い面もありますが、課題も残っています。',
+        'neutral': 'まだまだ改善の余地があります。'
+    };
+    
     const messageParagraph = document.createElement('p');
     messageParagraph.className = 'ending-message';
-    messageParagraph.textContent = selectedEnding.type === 'good' ? 
-        '素晴らしい結果です！あなたの政治参加が良い未来を作りました。' : 
-        selectedEnding.type === 'bad' ? 
-        '残念な結果です。政治への無関心が悪い未来を招きました。' :
-        selectedEnding.type === 'mixed' ?
-        '複雑な結果です。良い面もありますが、課題も残っています。' :
-        'まだまだ改善の余地があります。';
+    messageParagraph.textContent = endingMessages[selectedEnding.type] || endingMessages['neutral'];
     endingStatsDiv.appendChild(messageParagraph);
     
     const finalMessageParagraph = document.createElement('p');
