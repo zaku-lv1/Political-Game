@@ -460,7 +460,7 @@ function nextEvent() {
         const button = document.createElement('button');
         button.className = 'choice-button';
         button.textContent = choice.text;
-        button.onclick = () => makeChoice(choice);
+        button.addEventListener('click', () => makeChoice(choice));
         choicesContainer.appendChild(button);
     });
 }
@@ -468,7 +468,7 @@ function nextEvent() {
 function makeChoice(choice) {
     // Apply effects
     Object.keys(choice.effects).forEach(key => {
-        if (gameState.hasOwnProperty(key)) {
+        if (key in gameState) {
             gameState[key] = Math.max(0, Math.min(100, gameState[key] + choice.effects[key]));
         }
     });
@@ -499,24 +499,41 @@ function showEnding() {
     document.getElementById('ending-title').textContent = selectedEnding.title;
     document.getElementById('ending-description').textContent = selectedEnding.description;
     
-    const statsHtml = `
-        <h3>最終結果</h3>
-        <p>投票率: ${Math.round(gameState.voterTurnout)}%</p>
-        <p>民主主義: ${Math.round(gameState.democracy)}</p>
-        <p>経済: ${Math.round(gameState.economy)}</p>
-        <p>社会福祉: ${Math.round(gameState.welfare)}</p>
-        <p>若者の関心: ${Math.round(gameState.youthInterest)}</p>
-        <p class="ending-message">
-            ${selectedEnding.type === 'good' ? '素晴らしい結果です！あなたの政治参加が良い未来を作りました。' : 
-              selectedEnding.type === 'bad' ? '残念な結果です。政治への無関心が悪い未来を招きました。' : 
-              'まだまだ改善の余地があります。'}
-        </p>
-        <p class="final-message">
-            <strong>あなたの一票が未来を変えます。現実の選挙でも必ず投票に行きましょう！</strong>
-        </p>
-    `;
+    // Create ending stats safely using DOM methods
+    const endingStatsDiv = document.getElementById('ending-stats');
+    endingStatsDiv.innerHTML = ''; // Clear previous content
     
-    document.getElementById('ending-stats').innerHTML = statsHtml;
+    const h3 = document.createElement('h3');
+    h3.textContent = '最終結果';
+    endingStatsDiv.appendChild(h3);
+    
+    const createStatParagraph = (text) => {
+        const p = document.createElement('p');
+        p.textContent = text;
+        return p;
+    };
+    
+    endingStatsDiv.appendChild(createStatParagraph(`投票率: ${Math.round(gameState.voterTurnout)}%`));
+    endingStatsDiv.appendChild(createStatParagraph(`民主主義: ${Math.round(gameState.democracy)}`));
+    endingStatsDiv.appendChild(createStatParagraph(`経済: ${Math.round(gameState.economy)}`));
+    endingStatsDiv.appendChild(createStatParagraph(`社会福祉: ${Math.round(gameState.welfare)}`));
+    endingStatsDiv.appendChild(createStatParagraph(`若者の関心: ${Math.round(gameState.youthInterest)}`));
+    
+    const messageParagraph = document.createElement('p');
+    messageParagraph.className = 'ending-message';
+    messageParagraph.textContent = selectedEnding.type === 'good' ? 
+        '素晴らしい結果です！あなたの政治参加が良い未来を作りました。' : 
+        selectedEnding.type === 'bad' ? 
+        '残念な結果です。政治への無関心が悪い未来を招きました。' : 
+        'まだまだ改善の余地があります。';
+    endingStatsDiv.appendChild(messageParagraph);
+    
+    const finalMessageParagraph = document.createElement('p');
+    finalMessageParagraph.className = 'final-message';
+    const strong = document.createElement('strong');
+    strong.textContent = 'あなたの一票が未来を変えます。現実の選挙でも必ず投票に行きましょう！';
+    finalMessageParagraph.appendChild(strong);
+    endingStatsDiv.appendChild(finalMessageParagraph);
 }
 
 // Event listeners
