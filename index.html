@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政治シミュレーションゲーム - 選挙で未来を変えよう</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>政治シミュレーションゲーム</h1>
+            <p class="subtitle">あなたの一票が未来を変える</p>
+        </header>
+
+        <div id="start-screen" class="screen active">
+            <div class="content">
+                <h2>ようこそ</h2>
+                <p>これは日本の未来を決める政治シミュレーションゲームです。</p>
+                <p>あなたの選択と投票行動が、国の未来を大きく変えます。</p>
+                <p class="warning">若者が選挙に行かなければ、何も変わりません。</p>
+                <button id="start-button" class="btn-primary">ゲームを始める</button>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="stats-panel">
+                <div class="stat">
+                    <span class="stat-label">ターン:</span>
+                    <span id="turn-count">1</span> / <span id="max-turns">10</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">投票率:</span>
+                    <span id="voter-turnout">50</span>%
+                </div>
+                <div class="stat">
+                    <span class="stat-label">民主主義:</span>
+                    <div class="progress-bar">
+                        <div id="democracy-bar" class="progress-fill" style="width: 50%"></div>
+                    </div>
+                    <span id="democracy-value">50</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">経済:</span>
+                    <div class="progress-bar">
+                        <div id="economy-bar" class="progress-fill" style="width: 50%"></div>
+                    </div>
+                    <span id="economy-value">50</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">社会福祉:</span>
+                    <div class="progress-bar">
+                        <div id="welfare-bar" class="progress-fill" style="width: 50%"></div>
+                    </div>
+                    <span id="welfare-value">50</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">若者の関心:</span>
+                    <div class="progress-bar">
+                        <div id="youth-interest-bar" class="progress-fill" style="width: 50%"></div>
+                    </div>
+                    <span id="youth-interest-value">50</span>
+                </div>
+            </div>
+
+            <div class="event-panel">
+                <h2 id="event-title">イベント</h2>
+                <p id="event-description"></p>
+                <div id="choices-container"></div>
+            </div>
+        </div>
+
+        <div id="ending-screen" class="screen">
+            <div class="ending-content">
+                <h2 id="ending-title"></h2>
+                <p id="ending-description"></p>
+                <div id="ending-stats"></div>
+                <button id="restart-button" class="btn-primary">もう一度プレイする</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
